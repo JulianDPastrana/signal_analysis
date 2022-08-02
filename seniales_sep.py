@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def signal_generation():
+def signal_generation(plot=True):
     """
     Retorna señales de tensiones y corrientes trifasicas desbalanceadas.
     Las señales de tensión presentan un valor RMS de 120 V en secuencia
@@ -11,7 +11,9 @@ def signal_generation():
 
     Parámetros
     ----------
-    None :
+    plot : booleano
+        Variable utilizada para realizar las gráficas. Por defecto toma
+        el valor True
 
     Retorna
     -------
@@ -20,14 +22,6 @@ def signal_generation():
         muestras, correspondiente a las muestras por fase de tensiones y
         corrientes respectivamente
     """
-
-    plt.rcParams.update({'font.size': 15})
-    plt.rcParams['axes.spines.top'] = False
-    plt.rcParams['axes.spines.right'] = False
-    plt.rcParams['axes.linewidth'] = 3
-    plt.rcParams['lines.linewidth'] = 3.0
-    plt.rcParams['figure.figsize'] = 15, 8
-    plt.rcParams['axes.xmargin'] = 0
     
     F = 60
     Ts = 1/(100*F)
@@ -65,22 +59,31 @@ def signal_generation():
         f'\tMuestras tomadas: {N}\n'])
 
     print(info)
+    
+    if plot:
+        plt.rcParams.update({'font.size': 15})
+        plt.rcParams['axes.spines.top'] = False
+        plt.rcParams['axes.spines.right'] = False
+        plt.rcParams['axes.linewidth'] = 3
+        plt.rcParams['lines.linewidth'] = 3.0
+        plt.rcParams['figure.figsize'] = 15, 8
+        plt.rcParams['axes.xmargin'] = 0
 
-    col_labels = ["Tensiones", "Corrientes"]
-    row_labels = ["Fase A", "Fase B", "Fase C"]
-    fig, axs = plt.subplots(3, 2, sharex=True)
-    for i in range(3):
-        axs[i, 0].plot(voltages[i])
-        axs[i, 1].plot(currents[i])
+        col_labels = ["Tensiones", "Corrientes"]
+        row_labels = ["Fase A", "Fase B", "Fase C"]
+        fig, axs = plt.subplots(3, 2, sharex=True)
+        for i in range(3):
+            axs[i, 0].plot(voltages[i])
+            axs[i, 1].plot(currents[i])
 
-    for ax, col in zip(axs[0], col_labels):
-        ax.set_title(col)
+        for ax, col in zip(axs[0], col_labels):
+            ax.set_title(col)
 
-    for ax, row in zip(axs[:,0], row_labels):
-        ax.set_ylabel(row, rotation=0, labelpad=30)
+        for ax, row in zip(axs[:,0], row_labels):
+            ax.set_ylabel(row, rotation=0, labelpad=30)
 
-    fig.tight_layout()
-    plt.show()
+        fig.tight_layout()
+        plt.show()
 
     return voltages, currents
 
