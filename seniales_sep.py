@@ -40,7 +40,7 @@ def signal_generation(plot=True):
     )
 
     X = rs.uniform(
-        low=-50,
+        low=0,
         high=50,
         size=(3, 1)
     )
