@@ -47,7 +47,7 @@ def signal_generation(plot=True):
 
     Z = R + 1j*X
 
-    currents = voltages/Z
+    currents = voltages * np.exp(-1j*np.pi/6) /(Z*np.sqrt(3))
 
     voltages = voltages.imag
     currents = currents.imag
