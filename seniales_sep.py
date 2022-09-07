@@ -3,25 +3,25 @@ import matplotlib.pyplot as plt
 
 
 def signal_generation(plot=True):
-    """
-    Retorna seniales de tensiones y corrientes trifasicas desbalanceadas.
-    Las seniales de tensión presentan un valor RMS de 120 V en secuencia
-    positiva. Las sniales de corriente son generadas a partir de cargas
-    lineales aleatorias.
+#     """
+#     Retorna seniales de tensiones y corrientes trifasicas desbalanceadas.
+#     Las seniales de tensión presentan un valor RMS de 120 V en secuencia
+#     positiva. Las sniales de corriente son generadas a partir de cargas
+#     lineales aleatorias.
 
-    Parametros
-    ----------
-    plot : booleano
-        Variable utilizada para realizar las graficas. Por defecto toma
-        el valor True
+#     Parametros
+#     ----------
+#     plot : booleano
+#         Variable utilizada para realizar las graficas. Por defecto toma
+#         el valor True
 
-    Retorna
-    -------
-    (tensiones, corrientes): tupla de arreglos (3, N)
-        Tupla que contiene dos arreglos de (3, N) siendo N el número de
-        muestras, correspondiente a las muestras por fase de tensiones y
-        corrientes respectivamente
-    """
+#     Retorna
+#     -------
+#     (tensiones, corrientes): tupla de arreglos (3, N)
+#         Tupla que contiene dos arreglos de (3, N) siendo N el número de
+#         muestras, correspondiente a las muestras por fase de tensiones y
+#         corrientes respectivamente
+#     """
     
     F = 60
     Ts = 1/(100*F)
