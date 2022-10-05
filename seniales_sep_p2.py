@@ -1,4 +1,5 @@
- # -*- coding:<some encoding> -*-
+$ pyminifier --nonlatin --replacement-length=50 /tmp/tumult.py
+#!/usr/bin/env python3
 
 import numpy as np
 import matplotlib.pyplot as plt
