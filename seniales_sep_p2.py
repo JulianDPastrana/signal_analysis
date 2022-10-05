@@ -1,4 +1,3 @@
-$ pyminifier --nonlatin --replacement-length=50 /tmp/tumult.py
 #!/usr/bin/env python3
 
 import numpy as np
