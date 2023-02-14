@@ -2,91 +2,55 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def signal_generation(plot=True):
-#     """
-#     Retorna seniales de tensiones y corrientes trifasicas desbalanceadas.
-#     Las seniales de tensión presentan un valor RMS de 120 V en secuencia
-#     positiva. Las sniales de corriente son generadas a partir de cargas
-#     lineales aleatorias.
-
-#     Parametros
-#     ----------
-#     plot : booleano
-#         Variable utilizada para realizar las graficas. Por defecto toma
-#         el valor True
-
-#     Retorna
-#     -------
-#     (tensiones, corrientes): tupla de arreglos (3, N)
-#         Tupla que contiene dos arreglos de (3, N) siendo N el número de
-#         muestras, correspondiente a las muestras por fase de tensiones y
-#         corrientes respectivamente
-#     """
-    
+def signal_generation():
+    # Parameters
     F = 60
-    Ts = 1/(100*F)
-    t = np.arange(0.0, 5/60, Ts)
+    Ts = 1 / (100 * F)
+    t = np.arange(0.0, 5 / 60, Ts)
     rs = np.random.RandomState()
     N = t.size
-    voltages = np.empty([3, N], dtype=complex)
-    voltages[0] = 169.7056*np.exp(2j*np.pi*F*t)
-    voltages[1] = voltages[0]*np.exp(-2j*np.pi/3)
-    voltages[2] = voltages[1]*np.exp(-2j*np.pi/3)
+    Vf = np.empty([3, N], dtype=complex)
+    Vf[0] = 220 * np.sqrt(2) * np.exp(2j * np.pi * F * t)
+    Vf[1] = Vf[0] * np.exp(-2j * np.pi / 3)
+    Vf[2] = Vf[1] * np.exp(-2j * np.pi / 3)
 
-    R = rs.uniform(
-        low=10,
-        high=50,
-        size=(3, 1)
-    )
+    # Wire impedance
+    Zl1 = 0.009j
+    Zl2 = 0.01j
+    Zl3 = 0.01 + 0.001j
 
-    X = rs.uniform(
-        low=0,
-        high=50,
-        size=(3, 1)
-    )
+    # Node 1 measurements
+    Z1 = 15j
+    V1 = Z1 / (Z1 + Zl1) * Vf
+    I1 = V1 / Z1
 
-    Z = R + 1j*X
+    # Node 2 measurements
+    Z2 = 0.1 + 1.5j
+    V2 = Z2 / (Z2 + Zl2) * Vf
+    I2 = V2 / Z2
 
-    currents = voltages * np.exp(-1j*np.pi/6) /(Z*np.sqrt(3))
+    # Node 3 measurements
+    Z3 = np.array([20, 30, 25])[:, None]
+    V3 = Z3 / (Z3 + Zl3) * Vf
+    I3 = V3 / Z3
 
-    voltages = voltages.imag
-    currents = currents.imag
+    data = {
+        "Node 1": (V1.real, I1.real),
+        "Node 2": (V2.real, I2.real),
+        "Node 3": (V3.real, I3.real),
+    }
 
-    info = '\n'.join([
-        f'INFORMACIÓN:',
-        f'\tFrecuencia de operación: {F} Hz',
-        f'\tFrecuencia de muestreo: {1/Ts} Hz',
-        f'\tMuestras tomadas: {N}\n'])
-
-    print(info)
-    
-    if plot:
-        plt.rcParams.update({'font.size': 15})
-        plt.rcParams['axes.spines.top'] = False
-        plt.rcParams['axes.spines.right'] = False
-        plt.rcParams['axes.linewidth'] = 3
-        plt.rcParams['lines.linewidth'] = 3.0
-        plt.rcParams['figure.figsize'] = 15, 8
-        plt.rcParams['axes.xmargin'] = 0
-
-        col_labels = ["Tensiones", "Corrientes"]
-        row_labels = ["Fase A", "Fase B", "Fase C"]
-        fig, axs = plt.subplots(3, 2, sharex=True)
-        for i in range(3):
-            axs[i, 0].plot(voltages[i])
-            axs[i, 1].plot(currents[i])
-
-        for ax, col in zip(axs[0], col_labels):
-            ax.set_title(col)
-
-        for ax, row in zip(axs[:,0], row_labels):
-            ax.set_ylabel(row, rotation=0, labelpad=30)
-
-        fig.tight_layout()
-        plt.show()
-
-    return voltages, currents
+    return data
 
 
 if __name__ == '__main__':
-    tensiones, corrientes = signal_generation()      
+    data = signal_generation()
+    voltage, current = data["Node 3"]
+
+    fig, axs = plt.subplots(2, 1, figsize=(15, 8))
+    axs[0].plot(voltage.T)
+    axs[0].set_title("Voltages")
+    axs[1].plot(current.T)
+    axs[1].set_title("Currents")
+
+    plt.show()
