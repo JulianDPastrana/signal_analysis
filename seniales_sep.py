@@ -1,4 +1,5 @@
 import numpy as np
+from random import random
 import matplotlib.pyplot as plt
 
 
@@ -20,17 +21,17 @@ def signal_generation():
     Zl3 = 0.01 + 0.001j
 
     # Node 1 measurements
-    Z1 = 15j
+    Z1 = 15j * random()
     V1 = Z1 / (Z1 + Zl1) * Vf
     I1 = V1 / Z1
 
     # Node 2 measurements
-    Z2 = 0.1 + 1.5j
+    Z2 = 0.1 + 1.5j * random()
     V2 = Z2 / (Z2 + Zl2) * Vf
     I2 = V2 / Z2
 
     # Node 3 measurements
-    Z3 = np.array([20, 30, 25])[:, None]
+    Z3 = np.array([20, 30, 25])[:, None] * random()
     V3 = Z3 / (Z3 + Zl3) * Vf
     I3 = V3 / Z3
 
