@@ -23,8 +23,8 @@ class PowerSystem:
         self.rs = np.random.RandomState(state)
 
         print('\n'.join([
-            f'Network Frequency: {self.NETWORK_FREQUENCY}',
-            f'Sampling Frequency: {1 / self.SAMPLING_FREQUENCY}',
+            f'Network Frequency [Hz]: {self.NETWORK_FREQUENCY}',
+            f'Sampling Frequency [Samples / Seg]: {1 / self.SAMPLING_FREQUENCY}',
             f'Number of Samples: {self.NUM_SAMPLES}']))
 
     def __get_voltage_and_current(
