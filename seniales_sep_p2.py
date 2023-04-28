@@ -8,14 +8,11 @@ class PowerSystem:
     def __init__(self, state: int = None) -> None:
         """
         Initialize the Power System class.
-
         Args:
         - state: seed value for numpy random state
-
         Initializes the PowerSystem class with the given numpy random seed value
         and sets the NETWORK_FREQUENCY, SAMPLING_FREQUENCY, and NUM_SAMPLES
         attributes.
-
         """
         self.NETWORK_FREQUENCY = 60
         self.SAMPLING_FREQUENCY = 1 / (100 * self.NETWORK_FREQUENCY)
@@ -36,22 +33,18 @@ class PowerSystem:
             indexes: List[int] = None) -> Tuple[np.ndarray, np.ndarray]:
         """
         Returns the voltage and current based on the given parameters.
-
         Args:
         - n_harmonics: number of harmonics
         - max_range: maximum range for indexes
         - v_max: maximum voltage
         - phi: phase
         - indexes: list of indexes
-
         Returns:
         - voltage: voltage data
         - current: current data
-
         Given the specified number of harmonics, maximum range, maximum voltage,
         phase, and a list of indexes, this method returns voltage and current data
         based on the given parameters.
-
         """
         Vs_coeffs = np.zeros(self.NUM_SAMPLES // 2 + 1, dtype=complex)
         I_coeffs = np.zeros_like(Vs_coeffs)
@@ -89,57 +82,56 @@ class PowerSystem:
     def __get_impedance(self, R, L, C, k) -> complex:
         """
         Returns the impedance for a given set of parameters.
-
         Args:
         - R: resistance
         - L: inductance
         - C: capacitance
         - k: harmonic order
-
         Returns:
         - impedance: impedance value
-
         Given the specified resistance, inductance, capacitance, and harmonic order,
         this method calculates and returns the corresponding impedance value.
-
         """
         w = 2 * np.pi * self.NETWORK_FREQUENCY * k
         Z = R + 1j * w * L - 1j / (w * C)
         return Z
 
-    def get_data(self) -> Dict:
+    def get_data(self) -> Tuple[np.ndarray, np.ndarray]:
         """
         Returns voltage and current data for each node in the power system.
 
+        Args:
+        - title: string, optional. The title to be used in the output. Default is "".
+
         Returns:
-        - data: dictionary containing voltage and current data for each node
+        - voltage_data: numpy array containing voltage data for each node
+        - current_data: numpy array containing current data for each node
 
-        This method returns a dictionary containing voltage and current data for each
-        node in the power system, based on the output of the __get_voltage_and_current
-        method.
-
+        This method returns two separate numpy arrays containing voltage and current
+        data for each node in the power system, based on the output of the
+        __get_voltage_and_current method. It also allows for an optional title to be specified.
         """
-        data = {}
+        voltage_data = np.empty((3, 3, self.NUM_SAMPLES))
+        current_data = np.empty_like(voltage_data)
+
         for node in range(3):
-            V_data = np.empty((3, self.NUM_SAMPLES))
-            C_data = np.empty_like(V_data)
             for ph in range(3):
-                V_data[ph], C_data[ph] = self.__get_voltage_and_current(phi=2 * np.pi / 3 * ph)
+                voltage, current = self.__get_voltage_and_current(phi=2 * np.pi / 3 * ph)
+                voltage_data[node, ph] = voltage
+                current_data[node, ph] = current
 
-            data[f"Node {node}"] = (V_data, C_data)
-
-        return data
+        return voltage_data, current_data
 
 
 if __name__ == '__main__':
     system = PowerSystem()
     data = system.get_data()
-    voltage, current = data["Node 1"]
+    voltage, current = data
     fig, ax = plt.subplots(2, 1, sharex="all")
-    ax[0].plot(voltage.T, label=['Phase A', 'Phase B', 'Phase C'])
+    ax[0].plot(voltage[0].T, label=['Phase A', 'Phase B', 'Phase C'])
     ax[0].set_ylabel("Voltage [V]")
     ax[0].legend()
-    ax[1].plot(current.T)
+    ax[1].plot(current[0].T)
     ax[1].set_ylabel("Current [A]")
     ax[1].set_xlabel("Samples")
     plt.show()
